@@ -1,0 +1,123 @@
+<mvc:View controllerName="federationreport.controller.main"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns:f="sap.ui.layout.form"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}">
+        <Panel id="idPanel" headerText="{i18n>panelHeader}" 
+                    backgroundDesign="Solid" expandAnimation="true" expandable="true" 
+                        expanded="true" height="auto" width="auto" expand=".onExpand" class="sapUiResponsiveMargin">
+            <f:SimpleForm editable="true" layout="ResponsiveGridLayout" 
+                            labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" 
+                                emptySpanXL="0" emptySpanL="2" emptySpanM="0" emptySpanS="0" 
+                                    columnsXL="2" columnsL="1" columnsM="1" singleContainerFullSize="false">
+                <f:content>
+                    <Label text="{i18n>teaid}" design="Bold"/>
+                    <MultiInput id="TEAID" type="Text" valueHelpRequest="onValueHelpRequest"></MultiInput>
+                    <Label text="{i18n>sprid}" design="Bold"/>
+                    <MultiInput id="SPRID" type="Text" valueHelpRequest="onValueHelpRequest"></MultiInput>
+                    <Label text="{i18n>sprnm}" design="Bold"/>
+                    <MultiInput id="SPRNM" type="Text" showValueHelp="false"></MultiInput>
+                    <Label text="{i18n>sprln}" design="Bold"/>
+                    <MultiInput id="SPRLN" type="Text" showValueHelp="false"></MultiInput>
+                    <Label text="{i18n>bdate}" design="Bold"/>
+                    <Input id="bDateLow" type="Date"></Input>
+                    <Input id="bDateHigh" type="Date"></Input>
+                    <Label text="{i18n>sland}" design="Bold"/>
+                    <MultiInput id="SLAND" type="Text" valueHelpRequest="onValueHelpRequest"></MultiInput>
+                    <Label text="{i18n>pstion}" design="Bold"/>
+                    <MultiInput id="PSTION" type="Text" valueHelpRequest="onValueHelpRequest"></MultiInput>
+                    <Label text=""/>            
+                    <Button text="{i18n>show}" icon="sap-icon://detail-more" press=".onPressShow" type="Accept"/>
+                    <Button text="{i18n>clear}" icon="sap-icon://clear-all"  press=".onPressClear" type="Reject"/>
+                </f:content>
+            </f:SimpleForm>
+        </Panel>
+
+        <ScrollContainer id="scrollContainer" height="50%" vertical="true" horizontal="true">                
+            <Table id="generalTable" headerText="{i18n>listHeader}" items="{GeneralTable>/}"
+                        width="auto" autoPopinMode="true" growing="true" sticky="ColumnHeaders,HeaderToolbar"
+                            class="sapUiResponsiveMargin" >
+                <columns>
+                    <Column width="auto" hAlign="Center">
+                        <Text text="{i18n>sprid}"/>
+                    </Column>
+                    <Column width="auto" hAlign="Center">
+                        <Text text="{i18n>tetxt}"/>
+                    </Column>
+                    <Column width="auto" hAlign="Center">
+                        <Text text="{i18n>sprnm}"/>
+                    </Column>
+                    <Column width="auto" hAlign="Center">
+                        <Text text="{i18n>sprln}"/>
+                    </Column>
+                    <Column width="auto" hAlign="Center">
+                        <Text text="{i18n>bdate}"/>
+                    </Column>
+                    <Column width="auto" hAlign="Center">
+                        <Text text="{i18n>sland}"/>
+                    </Column>
+                    <Column width="auto" hAlign="Center">
+                        <Text text="{i18n>pstion}"/>
+                    </Column>
+                    <Column width="auto" hAlign="End">
+                        <Text text="{i18n>swage}"/>
+                    </Column>
+                    <Column width="auto" hAlign="Center">
+                        <Text text="{i18n>footu}"/>
+                    </Column>
+                    <Column width="auto" hAlign="End">
+                        <Text text="{i18n>value}"/>
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem vAlign="Bottom">
+                        <cells>
+                            <Text text="{GeneralTable>SPRID}"/>
+                        </cells>
+                        <cells>
+                            <Text text="{   path : 'GeneralTable>TETXT',
+                                            formatter : '.formatter.camelCase'
+                                        }"/>
+                        </cells>
+                        <cells>
+                            <Text text="{   path: 'GeneralTable>SPRNM',
+                                            formatter : '.formatter.camelCase'
+                                        }"/>
+                        </cells>
+                        <cells>
+                            <Text text="{   path : 'GeneralTable>SPRLN',
+                                            formatter : '.formatter.camelCase'
+                                        }"/>
+                        </cells>
+                        <cells>
+                            <Text text="{   path: 'GeneralTable>BDATE',
+                                            formatter : '.formatter.dateFormat'
+                                        }"/>
+                        </cells>
+                        <cells>
+                            <Text text="{GeneralTable>LANDT}"/>
+                        </cells>
+                        <cells>
+                            <Text text="{GeneralTable>PTEXT}"/>
+                        </cells>
+                        <cells>
+                            <Text text="{   path : 'GeneralTable>SWAGE',
+                                            formatter : '.formatter.currencyFormat'
+                                        }"/>
+                        </cells>
+                        <cells>
+                            <Text text="{   path: 'GeneralTable>FOOTU',
+                                            formatter : '.formatter.footUsed'
+                                        }"/>
+                        </cells>
+                        <cells>
+                            <Text text="{   path: 'GeneralTable>VALUE',
+                                            formatter : '.formatter.currencyFormat' 
+                                        }"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </ScrollContainer>
+    </Page>
+</mvc:View>

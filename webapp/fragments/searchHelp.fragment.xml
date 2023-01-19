@@ -1,0 +1,31 @@
+<c:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:c="sap.ui.core">
+    <TableSelectDialog id="searchDialog" noDataText="Nothing Found" title="Values"
+		                    items="{SearchHelpTable>/}" liveChange=".filterSearchValues" confirm=".setSelectedValues"  
+                                cancel=".pressCloseDialog" contentWidth="40%" contentHeight="60%" multiSelect="true">
+		<columns>
+			<Column width="12em">
+				<header>
+					<Text text="ID" />
+				</header>
+			</Column>
+			<Column demandPopin="true">
+				<header>
+					<Text text="Text" />
+				</header>
+			</Column>
+		</columns>
+		<ColumnListItem vAlign="Middle">
+            <cells>
+                <Text text="{SearchHelpTable>Id}"/>
+            </cells>
+            <cells>
+                <Text text="{ 
+								path : 'SearchHelpTable>Text',
+				 		 		formatter : '.formatter.camelCase'
+							}"/>
+            </cells>
+		</ColumnListItem>
+	</TableSelectDialog>
+</c:FragmentDefinition>
