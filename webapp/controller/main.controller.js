@@ -72,7 +72,7 @@ sap.ui.define([
                         aFilter.push(new Filter(aMultiInput[i], 
                                                     FilterOperator.EQ,  
                                                         oInput.getTokens()[j].getKey()));
-                    }; 
+                    };
                 };
 
                 if(!dBDateLow && !dBDateHigh){
@@ -94,6 +94,9 @@ sap.ui.define([
 
             _getData: function (aFilter) {
                 var that = this; 
+
+                this._getBusyDialog().open();
+
                 this.getOwnerComponent().getModel().read("/PlayerSet", {
                     filters: aFilter,
                     async: true,
@@ -102,79 +105,116 @@ sap.ui.define([
                             oData.results[index].VALUE = oData.results[index].VALUE + ' ' + oData.results[index].CURRY; 
                             oData.results[index].SWAGE = oData.results[index].SWAGE + ' ' + oData.results[index].CURRY; 
                         };
+                        that.closeBusyDialog();
+
                         var oModel = new JSONModel(oData.results);
                         that.getView().setModel(oModel, "GeneralTable");
                     },
                     error: function(err){
+                        that.closeBusyDialog();
+                        MessageToast.show(err.message);
+                    }
+                })
+            },
+            
+            onValueHelpRequest: function (oEvent) {
+                var that = this;
+                var sId = oEvent.getSource().getId();
+
+                this._getBusyDialog().open();
+
+                var sDomname = sId.split("---")[1];
+                var sDomname = sDomname.split("--")[1];
+                var aFilter  = [];
+
+                aFilter.push(new Filter("Column3", 
+                FilterOperator.EQ, 
+                sDomname));
+            
+                this.getOwnerComponent().getModel().read("/PlayerSearchHelpSet", {
+                    filters: aFilter,
+                    async: true,
+                    success: function (oData) {
+                        var aHelp = [];
+                        for (let i = 0; i < oData.results.length; i++) {
+                            var sVal = {};
+                            
+                            sVal.Id = oData.results[i].Column1;
+                            sVal.Text = oData.results[i].Column2;
+                            sVal.Name = oData.results[i].Column3;
+                            aHelp.push(sVal);
+                        }
+
+                        that.closeBusyDialog();
+
+                        var oModel = new JSONModel(aHelp);
+                        that.getView().setModel(oModel, "SearchHelpTable");
+
+                        var oDialog = that._getSearchDialog();
+                        that.getSelectedValues(sDomname);
+                        oDialog.open();
+                    },
+                    error: function (err) {
+                        that.closeBusyDialog();
                         MessageToast.show(err.message);
                     }
                 })
             },
 
-            onValueHelpRequest: function (oEvent) {
-                var that = this;
-                var sId = oEvent.getSource().getId();
-                
-                if( sId.search("SLAND") != -1 ){
-                    this.getOwnerComponent().getModel().read("/HT005LandSet", {
-                        async: true,
-                        success: function (oData) {
-                            var aHelp = [];
-                            for (let i = 0; i < oData.results.length; i++) {
-                                var sVal = {};
-                                sVal.Id = oData.results[i].Land1;
-                                sVal.Text = oData.results[i].Landx;
-                                sVal.Name = "SLAND";
-                                aHelp.push(sVal);
-                            }
-                            var oModel = new JSONModel(aHelp);
-                            that.getView().setModel(oModel, "SearchHelpTable");
-                            that._getSearchDialog().open();
-                        },
-                        error: function (err) {
-                            MessageToast.show(err.message);
-                            return;
-                        }
-                    })
-                }else{
-                    var sDomname = sId.split("---")[1];
-                    var sDomname = sDomname.split("--")[1];
-                    var aFilter  = [];
+            setSelectedValues: function () {
+                var aPaths = this._oSearchDialog._oTable._aSelectedPaths;
+                var oInput = "";
+
+                for (let i = 0; i < aPaths.length; i++) {
+                    const element = aPaths[i];
+                    var bFlag = true; 
+                    var sVar = this.getView().getModel("SearchHelpTable")
+                                        .getData()[element.substring(1, element.length)]
                     
-                    if ( sDomname == "TEAID" ) {
-                        sDomname = "TEAID";
-                    }else if( sDomname == "SPRID" ){
-                        sDomname = "SPRID";
-                    }else if( sDomname == "PSTION" ){
-                        sDomname = "PSTION";
+                    if (!oInput) {
+                        oInput  = this.getView().byId(sVar.Name);
                     }
-
-                    aFilter.push(new Filter("Column3", 
-                                                FilterOperator.EQ, 
-                                                    sDomname));
-
-                    this.getOwnerComponent().getModel().read("/PlayerSearchHelpSet", {
-                        filters: aFilter,
-                        async: true,
-                        success: function (oData) {
-                            var aHelp = [];
-                            for (let i = 0; i < oData.results.length; i++) {
-                                var sVal = {};
-                                
-                                sVal.Id = oData.results[i].Column1;
-                                sVal.Text = oData.results[i].Column2;
-                                sVal.Name = oData.results[i].Column3;
-                                aHelp.push(sVal);
-
-                                var oModel = new JSONModel(aHelp);
-                                that.getView().setModel(oModel, "SearchHelpTable");
-                                that._getSearchDialog().open();
-                            }
-                        },
-                        error: function (err) {
-                            MessageToast.show(err.message);
+                    
+                    oInput.getTokens().map( item => {
+                        if( item.getKey() == sVar.Id ){
+                            bFlag = false;
                         }
                     })
+
+                    if (bFlag) {
+                        oInput.addToken(new Token({text: sVar.Id, key: sVar.Id}));
+                    }
+                }
+
+                this._oSearchDialog.destroy();
+            },
+
+            filterSearchValues: function (oEvent) {
+                var aFilter = [];
+                var sQuery  = oEvent.getSource()._sSearchFieldValue;
+                var oTable  = this._oSearchDialog._oTable;
+
+                if (sQuery && sQuery.length > 0) {
+                    aFilter = [
+                        new Filter([
+                            new Filter("Id", FilterOperator.Contains, sQuery),
+                            new Filter("Text", FilterOperator.Contains, sQuery),
+                    ])];
+                }
+                oTable.getBinding("items").filter(aFilter, "Control");
+            },
+
+            getSelectedValues: function (sDomname) {
+                var aValues = this.getView().byId(sDomname).getTokens();
+                var aData   = this.getView().getModel("SearchHelpTable").getData();
+
+                for (let i = 0; i < aValues.length; i++) {
+                    aData.map( item => {
+                        if (item.Id == aValues[i].getKey()) {
+                            this._oSearchDialog._oTable._aSelectedPaths
+                                                .push("/" + aData.indexOf(item));       
+                        }
+                    });                          
                 }
             },
 
@@ -188,25 +228,6 @@ sap.ui.define([
                 return this._oSearchDialog;	
             },
 
-            setSelectedValues: function () {
-                var aPaths = this._oSearchDialog._oTable._aSelectedPaths;
-                var oInput = "";
-
-                for (let i = 0; i < aPaths.length; i++) {
-                    const element = aPaths[i];
-                    var sVar = this.getView().getModel("SearchHelpTable")
-                                        .getData()[element.substring(1, element.length)]
-                    
-                    if (!oInput) {
-                        oInput  = this.getView().byId(sVar.Name);
-                    }
-
-                    oInput.addToken(new Token({text: sVar.Id, key: sVar.Id}));
-                }
-
-                this._oSearchDialog.destroy();
-            },
-
             pressCloseDialog: function () {
                 if(this._oSearchDialog){
                     var oModel = new JSONModel([]);
@@ -215,19 +236,20 @@ sap.ui.define([
                 }
             },
 
-            filterSearchValues: function (oEvent) {
-                var aFilter = [];
-                var sQuery = oEvent.getSource()._sSearchFieldValue;
-                var oTable = this._oSearchDialog._oTable;
+            _getBusyDialog: function () {
+                this._oBusyDialog = sap.ui.getCore().byId("busyDialog");		
+                if (!this._oBusyDialog) {				
+                    this._oBusyDialog = sap.ui.xmlfragment("federationreport.fragments.busyDialog", this); 
+                    this.getView().addDependent(this._oBusyDialog);
+                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._oBusyDialog);	
+                }			
+                return this._oBusyDialog;	
+            },
 
-                if (sQuery && sQuery.length > 0) {
-                    aFilter = [
-                        new Filter([
-                            new Filter("Id", FilterOperator.Contains, sQuery),
-                            new Filter("Text", FilterOperator.Contains, sQuery),
-                    ])];
+            closeBusyDialog: function () {
+                if (this._oBusyDialog) {
+                    this._oBusyDialog.destroy();
                 }
-                oTable.getBinding("items").filter(aFilter, "Control");
             }
         });
     });

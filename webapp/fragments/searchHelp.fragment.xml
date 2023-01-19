@@ -1,9 +1,9 @@
 <c:FragmentDefinition
 	xmlns="sap.m"
 	xmlns:c="sap.ui.core">
-    <TableSelectDialog id="searchDialog" noDataText="Nothing Found" title="Values"
-		                    items="{SearchHelpTable>/}" liveChange=".filterSearchValues" confirm=".setSelectedValues"  
-                                cancel=".pressCloseDialog" contentWidth="40%" contentHeight="60%" multiSelect="true">
+	<TableSelectDialog id="searchDialog" noDataText="Nothing Found" title="Values"
+							items="{SearchHelpTable>/}" liveChange=".filterSearchValues" confirm=".setSelectedValues"  
+								cancel=".pressCloseDialog" contentWidth="40%" contentHeight="60%" multiSelect="true">
 		<columns>
 			<Column width="12em">
 				<header>
@@ -17,15 +17,15 @@
 			</Column>
 		</columns>
 		<ColumnListItem vAlign="Middle">
-            <cells>
-                <Text text="{SearchHelpTable>Id}"/>
-            </cells>
-            <cells>
-                <Text text="{ 
+			<cells>
+				<Text text="{SearchHelpTable>Id}"/>
+			</cells>
+			<cells>
+				<Text text="{ 
 								path : 'SearchHelpTable>Text',
-				 		 		formatter : '.formatter.camelCase'
+								formatter : '.formatter.camelCase'
 							}"/>
-            </cells>
+			</cells>
 		</ColumnListItem>
 	</TableSelectDialog>
 </c:FragmentDefinition>
