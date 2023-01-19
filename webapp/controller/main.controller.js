@@ -101,13 +101,14 @@ sap.ui.define([
                     filters: aFilter,
                     async: true,
                     success: function (oData) {
-                        for (let index = 0; index < oData.results.length; index++) {
-                            oData.results[index].VALUE = oData.results[index].VALUE + ' ' + oData.results[index].CURRY; 
-                            oData.results[index].SWAGE = oData.results[index].SWAGE + ' ' + oData.results[index].CURRY; 
-                        };
+                        var aData = oData.results;
+                        aData.map( item => {
+                            item.VALUE = item.VALUE + ' ' + item.CURRY;
+                            item.SWAGE = item.SWAGE + ' ' + item.CURRY;
+                        });
                         that.closeBusyDialog();
 
-                        var oModel = new JSONModel(oData.results);
+                        var oModel = new JSONModel(aData);
                         that.getView().setModel(oModel, "GeneralTable");
                     },
                     error: function(err){
@@ -136,14 +137,15 @@ sap.ui.define([
                     async: true,
                     success: function (oData) {
                         var aHelp = [];
-                        for (let i = 0; i < oData.results.length; i++) {
+                        var aData = oData.results;
+                        
+                        aData.map(item => {
                             var sVal = {};
-                            
-                            sVal.Id = oData.results[i].Column1;
-                            sVal.Text = oData.results[i].Column2;
-                            sVal.Name = oData.results[i].Column3;
+                            sVal.Id   = item.Column1;
+                            sVal.Text = item.Column2;
+                            sVal.Name = item.Column3;
                             aHelp.push(sVal);
-                        }
+                        })
 
                         that.closeBusyDialog();
 
@@ -182,7 +184,10 @@ sap.ui.define([
                     })
 
                     if (bFlag) {
-                        oInput.addToken(new Token({text: sVar.Id, key: sVar.Id}));
+                        oInput.addToken(new Token({
+                                                    text: sVar.Id,
+                                                    key: sVar.Id
+                                                }));
                     }
                 }
 
