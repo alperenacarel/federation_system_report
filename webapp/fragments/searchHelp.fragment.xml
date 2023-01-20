@@ -1,9 +1,9 @@
 <c:FragmentDefinition
 	xmlns="sap.m"
 	xmlns:c="sap.ui.core">
-	<TableSelectDialog id="searchDialog" noDataText="Nothing Found" title="Values"
+	<TableSelectDialog id="searchDialog" noDataText="Nothing Found" title="Values" multiSelect="true"
 							items="{SearchHelpTable>/}" liveChange=".filterSearchValues" confirm=".setSelectedValues"  
-								cancel=".pressCloseDialog" contentWidth="40%" contentHeight="60%" multiSelect="true">
+								cancel=".pressCloseDialog" contentWidth="40%" contentHeight="60%" resizable="true" draggable="true">
 		<columns>
 			<Column width="12em">
 				<header>

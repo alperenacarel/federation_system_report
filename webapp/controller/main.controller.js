@@ -77,6 +77,7 @@ sap.ui.define([
                 })
 
                 this.getView().byId("selectFilter").setSelectedKey("TETXT");
+                this.setPlaceholder("TETXT");
 
                 var oModel = new JSONModel(aItems);
                 this.getView().setModel(oModel, "SelectItems");
@@ -205,7 +206,7 @@ sap.ui.define([
                     })
 
                     if (bFlag) {
-                        oInput.addToken(new Token({
+                        oInput.addToken(new Token({ 
                                                     text: sVar.Id,
                                                     key: sVar.Id
                                                 }));
@@ -245,7 +246,7 @@ sap.ui.define([
             },
 
             _getSearchDialog: function () {
-                this._oSearchDialog = sap.ui.getCore().byId("searchDialog");		
+                this._oSearchDialog = sap.ui.getCore().byId();		
                 if (!this._oSearchDialog) {				
                     this._oSearchDialog = sap.ui.xmlfragment("federationreport.fragments.searchHelp", this); 
                     this.getView().addDependent(this._oSearchDialog);
@@ -288,6 +289,16 @@ sap.ui.define([
                         new Filter(sKey, FilterOperator.Contains, sQuery)];
                 }
                 this.getView().byId("generalTable").getBinding("items").filter(aFilter, "Application");
+            },
+
+            onChangeSelected: function(){
+                this.setPlaceholder(this.getView().byId("selectFilter").getSelectedItem().mProperties.key);
+                this.getView().byId("listSearch").fireLiveChange();
+            },
+
+            setPlaceholder: function(sSelect){
+                var sText = this.getOwnerComponent().getModel("i18n").getResourceBundle().getText(sSelect.toLowerCase());
+                this.getView().byId("listSearch").setPlaceholder(sText);
             }
         });
     });

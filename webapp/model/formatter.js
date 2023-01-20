@@ -8,7 +8,8 @@ sap.ui.define([
                 //FENERBAHÇE ---> Fenerbahçe
                 return sValue.replace(/([^\s:\-])([^\s:\-]*)/g,function($0,$1,$2){
 
-                    return $1.toUpperCase()+$2.toLowerCase();
+                    return $1.toUpperCase() + 
+                                $2.toLowerCase();
 
                 });
 
@@ -29,7 +30,7 @@ sap.ui.define([
             },
 
             currencyFormat : function (sValue) {
-                //100000 ---> $100,000.00
+                //100000 ---> $100,000
                 let aVal = sValue.split(" ");
                 return Intl.NumberFormat('en-US', {
                     style: 'currency',

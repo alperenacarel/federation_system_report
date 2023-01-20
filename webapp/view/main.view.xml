@@ -34,16 +34,24 @@
             </f:SimpleForm>
         </Panel>
 
-        <ScrollContainer id="scrollContainer" height="50%" vertical="true" horizontal="true">                
-            <OverflowToolbar asyncMode="false" class="sapUiResponsiveMargin">
-                <SearchField liveChange=".onSearch" width="30%"/>
-                <Select id="selectFilter" forceSelection="false" items="{SelectItems>/}">
-					<core:Item key="{SelectItems>Id}" text="{SelectItems>Text}" />
-                </Select>
-            </OverflowToolbar>
+        <ScrollContainer id="scrollContainer" height="50%" vertical="true" horizontal="true"> 
             <Table id="generalTable" headerText="{i18n>listHeader}" items="{GeneralTable>/}"
                         width="auto" autoPopinMode="true" growing="true" sticky="ColumnHeaders,HeaderToolbar"
                             class="sapUiResponsiveMargin" >
+                <headerToolbar class="sapUiResponsiveMargin">
+                    <Toolbar>
+                        <content>
+                            <Text text="{i18n>listHeader}"/>
+                        </content>
+                        <ToolbarSpacer/>
+                        <content>
+                            <SearchField id="listSearch" liveChange=".onSearch" width="30%"/>
+                            <Select id="selectFilter" forceSelection="false" items="{SelectItems>/}" change="onChangeSelected">
+                                <core:Item key="{SelectItems>Id}" text="{SelectItems>Text}" />
+                            </Select>
+                        </content>
+                    </Toolbar>
+                </headerToolbar>
                 <columns>
                     <Column width="auto" hAlign="Center">
                         <Text text="{i18n>sprid}"/>
