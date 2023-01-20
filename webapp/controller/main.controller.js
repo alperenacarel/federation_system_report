@@ -20,12 +20,15 @@ sap.ui.define([
         "use strict";
         var aMultiInput = ["SPRID", "TEAID", "SPRNM",
                             "SPRLN", "SLAND", "PSTION"];
+        
+        var aSelectItems = ["TETXT", "SPRNM", "SPRLN"];
 
         return Controller.extend("federationreport.controller.main", { 
             formatter : formatter,
 
             onInit: function () {
                 this._setScreenMultiInput();
+                this._setSelectItems();
             },
 
             onExpand: function () {
@@ -59,6 +62,24 @@ sap.ui.define([
                         });
                     });
                 };
+            },
+
+            _setSelectItems: function () {
+                var aItems = [];
+                
+                aSelectItems.map( item => {
+                    var sVal = {};
+                    
+                    sVal.Id = item;
+                    sVal.Text = this.getOwnerComponent().getModel("i18n").getResourceBundle().getText(item.toLowerCase());
+
+                    aItems.push(sVal);
+                })
+
+                this.getView().byId("selectFilter").setSelectedKey("TETXT");
+
+                var oModel = new JSONModel(aItems);
+                this.getView().setModel(oModel, "SelectItems");
             },
 
             _setFilter: function () {
@@ -138,7 +159,7 @@ sap.ui.define([
                     success: function (oData) {
                         var aHelp = [];
                         var aData = oData.results;
-                        
+
                         aData.map(item => {
                             var sVal = {};
                             sVal.Id   = item.Column1;
@@ -255,6 +276,18 @@ sap.ui.define([
                 if (this._oBusyDialog) {
                     this._oBusyDialog.destroy();
                 }
+            },
+
+            onSearch: function(oEvent){
+                var sQuery  = oEvent.getSource().mProperties.value;
+                var aFilter = [];
+                var sKey    = this.getView().byId("selectFilter").getSelectedItem().mProperties.key
+
+                if (sQuery && sQuery.length > 0) {
+                    aFilter = [
+                        new Filter(sKey, FilterOperator.Contains, sQuery)];
+                }
+                this.getView().byId("generalTable").getBinding("items").filter(aFilter, "Application");
             }
         });
     });

@@ -1,7 +1,8 @@
 <mvc:View controllerName="federationreport.controller.main"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns:f="sap.ui.layout.form"
-    xmlns="sap.m">
+    xmlns="sap.m"
+	xmlns:core="sap.ui.core">
     <Page id="page" title="{i18n>title}">
         <Panel id="idPanel" headerText="{i18n>panelHeader}" 
                     backgroundDesign="Solid" expandAnimation="true" expandable="true" 
@@ -34,6 +35,12 @@
         </Panel>
 
         <ScrollContainer id="scrollContainer" height="50%" vertical="true" horizontal="true">                
+            <OverflowToolbar asyncMode="false" class="sapUiResponsiveMargin">
+                <SearchField liveChange=".onSearch" width="30%"/>
+                <Select id="selectFilter" forceSelection="false" items="{SelectItems>/}">
+					<core:Item key="{SelectItems>Id}" text="{SelectItems>Text}" />
+                </Select>
+            </OverflowToolbar>
             <Table id="generalTable" headerText="{i18n>listHeader}" items="{GeneralTable>/}"
                         width="auto" autoPopinMode="true" growing="true" sticky="ColumnHeaders,HeaderToolbar"
                             class="sapUiResponsiveMargin" >
@@ -67,6 +74,9 @@
                     </Column>
                     <Column width="auto" hAlign="End">
                         <Text text="{i18n>value}"/>
+                    </Column>
+                    <Column>
+                        <Text text="{i18n>detail}"/>
                     </Column>
                 </columns>
                 <items>
@@ -114,6 +124,9 @@
                             <Text text="{   path: 'GeneralTable>VALUE',
                                             formatter : '.formatter.currencyFormat' 
                                         }"/>
+                        </cells>
+                        <cells>
+                            <Button icon="sap-icon://show"/> 
                         </cells>
                     </ColumnListItem>
                 </items>

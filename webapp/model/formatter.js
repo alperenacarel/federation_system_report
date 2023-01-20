@@ -34,6 +34,7 @@ sap.ui.define([
                 return Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: aVal[1],
+                    minimumFractionDigits: 0,
                 }).format(aVal[0]);
             }
         }
