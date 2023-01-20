@@ -246,7 +246,7 @@ sap.ui.define([
             },
 
             _getSearchDialog: function () {
-                this._oSearchDialog = sap.ui.getCore().byId();		
+                this._oSearchDialog = sap.ui.getCore().byId("searchDialog");		
                 if (!this._oSearchDialog) {				
                     this._oSearchDialog = sap.ui.xmlfragment("federationreport.fragments.searchHelp", this); 
                     this.getView().addDependent(this._oSearchDialog);
